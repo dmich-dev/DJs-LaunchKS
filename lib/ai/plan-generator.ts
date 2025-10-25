@@ -1,9 +1,8 @@
-import { generateText, Output, stepCountIs } from 'ai';
+import { generateObject } from 'ai';
 import { eq, desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { userProfile, conversation, message, plan, phase, milestone, task, resource } from '@/lib/db/schema';
 import { aiModel } from './config';
-import { availableTools } from './tools';
 import { getPlanGeneratorSystemPrompt } from './prompts';
 import { planSchema } from './schemas/plan';
 import type { UserProfile } from '@/types/db';
@@ -48,8 +47,8 @@ export async function generateCareerPlan({ userId, conversationId }: GeneratePla
   const targetCareer = extractTargetCareer(userMessages.map(m => m.content));
   const currentCareer = profile.currentJobTitle || profile.currentEmploymentStatus;
 
-  // Generate plan using AI with tools
-  const result = await generateText({
+  // Generate plan using AI
+  const result = await generateObject({
     model: aiModel,
     system: getPlanGeneratorSystemPrompt({
       profile,
@@ -57,15 +56,13 @@ export async function generateCareerPlan({ userId, conversationId }: GeneratePla
       currentCareer,
       targetCareer,
     }),
-    prompt: `Generate a comprehensive career transition plan from "${currentCareer}" to "${targetCareer}". Use the search_web tool extensively to find current Kansas resources, programs, job listings, and salary data.`,
-    experimental_output: Output.object({
-      schema: planSchema,
-    }),
-    tools: availableTools,
-    stopWhen: stepCountIs(10), // Allow multiple tool calls
+    prompt: `Generate a comprehensive career transition plan from "${currentCareer}" to "${targetCareer}". Focus on Kansas-specific resources, programs, job listings, and salary data. Be thorough and provide actionable steps with real resources.`,
+    schema: planSchema,
+    schemaName: 'CareerPlan',
+    schemaDescription: 'A comprehensive career transition plan with phases, milestones, tasks, and resources',
   });
 
-  const generatedPlan = result.experimental_output;
+  const generatedPlan = result.object;
 
   // Save plan to database
   const [savedPlan] = await db
