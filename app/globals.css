@@ -54,12 +54,12 @@
   --primary: oklch(0.24 0.03 240);
   --primary-foreground: oklch(1 0 0); /* White */
 
-  /* CTA/Accent (Sunflower Gold #FFC107) */
+  /* CTA/Accent (Sunflower Gold #FFC107) - for all CTAs/Buttons */
   --accent: oklch(0.84 0.15 85);
   --accent-foreground: oklch(0.24 0.03 240); /* Dark text on gold */
 
-  /* Secondary (Accent Blue #007BFF) */
-  --secondary: oklch(0.55 0.24 260);
+  /* Secondary (Vibrant Blue #007BFF) - for links and secondary actions */
+  --secondary: oklch(0.60 0.24 250);
   --secondary-foreground: oklch(1 0 0); /* White */
 
   /* Muted */
@@ -122,8 +122,8 @@
   --accent: oklch(0.84 0.15 85);
   --accent-foreground: oklch(0.24 0.03 240);
 
-  /* Secondary (Blue) */
-  --secondary: oklch(0.55 0.24 260);
+  /* Secondary (Vibrant Blue) */
+  --secondary: oklch(0.60 0.24 250);
   --secondary-foreground: oklch(1 0 0);
 
   /* Muted */

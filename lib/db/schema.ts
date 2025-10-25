@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, uniqueIndex, integer } from "drizzle-orm/pg-core";
 
 export const user = pgTable(
     'user',
@@ -8,11 +8,13 @@ export const user = pgTable(
       email: text('email').notNull().unique(),
       emailVerified: boolean('emailVerified').notNull().default(false),
       image: text('image'),
+      role: text('role', { enum: ['user', 'admin'] }).notNull().default('user'),
       createdAt: timestamp('createdAt').notNull().defaultNow(),
       updatedAt: timestamp('updatedAt').notNull().defaultNow(),
     },
     (table) => [
       uniqueIndex('user_email_idx').on(table.email),
+      index('user_role_idx').on(table.role),
     ]
   );
   
@@ -63,3 +65,76 @@ export const user = pgTable(
     createdAt: timestamp('createdAt').notNull().defaultNow(),
     updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   });
+
+  export const userProfile = pgTable('user_profile', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id')
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    firstName: text('first_name').notNull(),
+    lastName: text('last_name').notNull(),
+    location: text('location').notNull(), // City/region in Kansas
+    phoneNumber: text('phone_number'),
+    isKansasResident: boolean('is_kansas_resident').notNull().default(true),
+    currentEmploymentStatus: text('current_employment_status', {
+      enum: ['employed', 'unemployed', 'student', 'other']
+    }).notNull(),
+    currentJobTitle: text('current_job_title'),
+    currentIndustry: text('current_industry'),
+    yearsOfExperience: integer('years_of_experience'),
+    educationLevel: text('education_level', {
+      enum: ['high_school', 'some_college', 'associates', 'bachelors', 'masters', 'doctorate', 'other']
+    }).notNull(),
+    availableHoursPerWeek: integer('available_hours_per_week').notNull(),
+    willingToRelocate: boolean('willing_to_relocate').notNull().default(false),
+    hasTransportation: boolean('has_transportation').notNull().default(true),
+    financialSituation: text('financial_situation', {
+      enum: ['can_afford_paid', 'needs_free_only', 'needs_assistance']
+    }).notNull(),
+    learningPreference: text('learning_preference', {
+      enum: ['online', 'in_person', 'hybrid', 'self_paced']
+    }).notNull(),
+    barriers: text('barriers'), // JSON stringified array
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  }, (table) => [
+    index('user_profile_user_id_idx').on(table.userId),
+  ]);
+
+  export const notificationPreference = pgTable('notification_preference', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id')
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    emailReminders: boolean('email_reminders').notNull().default(true),
+    reminderFrequency: text('reminder_frequency', {
+      enum: ['daily', 'weekly', 'biweekly']
+    }).notNull().default('weekly'),
+    milestoneEmails: boolean('milestone_emails').notNull().default(true),
+    phaseCompletionEmails: boolean('phase_completion_emails').notNull().default(true),
+    marketingEmails: boolean('marketing_emails').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  }, (table) => [
+    index('notification_preference_user_id_idx').on(table.userId),
+  ]);
+
+  export const email = pgTable('email', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id').references(() => user.id, { onDelete: 'set null' }),
+    to: text('to').notNull(),
+    subject: text('subject').notNull(),
+    type: text('type', {
+      enum: ['verification', 'password_reset', 'plan_ready', 'reminder', 'milestone_complete', 'phase_complete', 'admin_digest']
+    }).notNull(),
+    status: text('status', { enum: ['queued', 'sent', 'failed'] }).notNull().default('queued'),
+    sentAt: timestamp('sent_at'),
+    error: text('error'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('email_user_id_idx').on(table.userId),
+    index('email_type_idx').on(table.type),
+    index('email_status_idx').on(table.status),
+  ]);
