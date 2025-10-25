@@ -147,62 +147,75 @@ Learning Preference: ${context.profile.learningPreference}
 **Conversation Summary:**
 ${context.conversationSummary}
 
-**Requirements:**
+**CRITICAL VALIDATION RULES - MUST FOLLOW EXACTLY:**
+- You MUST create EXACTLY 3-5 phases (minimum 3, maximum 5)
+- EACH phase MUST have EXACTLY 3-6 milestones (minimum 3, maximum 6)
+- EACH milestone MUST have EXACTLY 3-8 tasks (minimum 3, maximum 8)
+- EACH milestone MUST have AT LEAST 1 resource (minimum 1)
+- If these requirements are not met, the plan will be rejected
 
-1. **Structure:** Create 3-5 phases following this pattern:
-   - Phase 1: Foundation Building (prerequisites, basic knowledge)
-   - Phase 2: Core Skill Development (main technical/professional skills)
-   - Phase 3: Certification/Credentials (if applicable)
-   - Phase 4: Real-World Experience (projects, volunteering, internships)
-   - Phase 5: Job Search & Landing (resume, applications, interviews, job listings)
+**Required Plan Structure (3-5 Phases):**
 
-2. **Milestones:** Each phase should have 3-6 milestones
-   - Each milestone represents a significant achievement
-   - Milestones should be sequential and build on each other
-   - Provide clear completion criteria
+Phase 1: Foundation Building (2-3 months)
+   - 3-6 milestones covering: prerequisites, basic knowledge, foundational skills
+   - Example milestones: "Complete beginner certification", "Build foundational knowledge", "Set up learning environment"
 
-3. **Tasks:** Each milestone should have 3-8 specific, actionable tasks
-   - Start tasks with action verbs (Complete, Research, Enroll, Build, etc.)
-   - Be specific, not generic
-   - Estimate realistic time requirements
+Phase 2: Core Skill Development (3-4 months)
+   - 3-6 milestones covering: main technical/professional skills, hands-on practice
+   - Example milestones: "Master core competencies", "Complete intermediate training", "Build practice projects"
 
-4. **Resources:** CRITICAL - Use search_web tool extensively to find:
-   - FREE or LOW-COST Kansas resources first
-   - Accredited programs from Kansas institutions
-   - Community colleges, technical schools, workforce programs
-   - Online options from reputable providers (Coursera, LinkedIn Learning, etc.)
-   - Kansas-specific job boards and networking groups
-   - Government programs (Kansas WorkforceONE, DOL resources)
-   - Include DIRECT enrollment URLs
-   - Specify EXACT costs and durations
-   - For job listings: Search for actual current openings in Kansas
+Phase 3: Advanced Training & Certification (2-3 months)
+   - 3-6 milestones covering: industry certifications, specialized skills, advanced topics
+   - Example milestones: "Earn industry certification", "Complete advanced coursework", "Develop specialization"
 
-5. **Realism:**
-   - Base timeline on user's available hours per week
-   - Account for prerequisites and program wait times
-   - Be encouraging but honest about time investment
-   - Consider user's financial constraints
+Phase 4: Real-World Experience (2-4 months)
+   - 3-6 milestones covering: portfolio projects, volunteering, internships, networking
+   - Example milestones: "Build portfolio projects", "Complete volunteer work", "Network with professionals"
 
-6. **Kansas Focus:**
-   - Prioritize Kansas-based providers and programs
-   - Include Kansas salary data (use search_web)
-   - Reference Kansas job market conditions
-   - Mention Kansas cities where jobs are concentrated
-   - Include Kansas-specific certifications if relevant
+Phase 5: Job Search & Career Launch (1-2 months)
+   - 3-6 milestones covering: resume building, job applications, interview prep, actual job listings
+   - Example milestones: "Prepare application materials", "Apply to target positions", "Master interview process"
 
-7. **Quality Standards:**
-   - Verify all resources exist and are currently available
-   - Only recommend accredited programs for certifications
-   - Include contact information for programs when possible
-   - Ensure URLs are correct and direct (not homepage)
+**Milestone Requirements:**
+Each milestone MUST include:
+- Minimum 3 actionable tasks (start with verbs: Complete, Research, Enroll, Build, Create, Practice, etc.)
+- At least 1 resource with valid URL, cost, duration, and provider
+- Clear completion criteria
+- Logical orderIndex (0, 1, 2, etc.)
 
-**Final Phase Requirements:**
-The last phase MUST include actual job listings. Use search_web to find 5-10 real, current job postings in Kansas for the target career. Include them as resources with:
-- Job title
-- Company name
-- Location
-- Salary range (if listed)
-- Direct application URL
+**Task Requirements (3-8 per milestone):**
+- Be specific and actionable (BAD: "Learn JavaScript" GOOD: "Complete JavaScript Fundamentals course on freeCodeCamp")
+- Include concrete deliverables when possible
+- Sequence tasks logically
+- Each task needs: title, description, orderIndex
 
-Generate the plan now as valid JSON matching the schema.`;
+**Resource Requirements (minimum 1 per milestone):**
+- Prioritize FREE Kansas resources (Kansas WorkforceONE, KansasWorks, local community colleges)
+- Include realistic online options (freeCodeCamp, Coursera, Khan Academy, YouTube channels)
+- Provide REAL URLs (check that they exist)
+- Specify exact costs: "Free", "$49/month", "$500-1000"
+- Include duration: "Self-paced", "6 weeks", "3 months"
+- Set location: "online", "in_person", or "hybrid"
+- For certifications, set isAccredited to true/false
+
+**Kansas-Specific Requirements:**
+- Reference Kansas cities: Kansas City, Wichita, Topeka, Overland Park, Lawrence
+- Include Kansas salary ranges (research typical Kansas salaries for this career)
+- Mention Kansas job market outlook
+- Suggest Kansas-based programs: Johnson County Community College, Wichita State Tech, Kansas City Kansas Community College
+- Final phase should reference KansasWorks.com for job listings
+
+**Salary Data:**
+- Provide realistic Kansas salary ranges
+- Entry level: typical starting salary in Kansas
+- Experienced: 3-5 years experience in Kansas
+- Format as: "$45,000 - $55,000" or "$65,000 - $85,000"
+
+**Realistic Timelines:**
+- Calculate based on ${context.profile.availableHoursPerWeek} hours/week
+- Be honest about total duration
+- Account for course schedules, application deadlines, wait times
+- Format as: "2-3 months", "4-6 months", "6-12 months total"
+
+Generate a complete career transition plan following these requirements EXACTLY. The plan will be validated against these minimums - failure to meet them will cause an error.`;
 }

@@ -45,15 +45,20 @@ function GeneratingContent() {
           body: JSON.stringify({ conversationId }),
         });
 
+        const data = await response.json();
+        
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to generate plan');
+          throw new Error(data.error || 'Failed to generate plan');
         }
 
-        const { planId } = await response.json();
+        const { planId, isDemo } = data;
 
-        // Redirect to plan view
-        router.push(`/plan/${planId}`);
+        // Redirect to plan view (or demo if generation failed)
+        if (isDemo || planId === 'demo') {
+          router.push('/plan/demo');
+        } else {
+          router.push(`/plan/${planId}`);
+        }
       } catch (err) {
         console.error('Plan generation error:', err);
         setError(err instanceof Error ? err.message : 'An unexpected error occurred');

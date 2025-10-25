@@ -47,22 +47,58 @@ export async function generateCareerPlan({ userId, conversationId }: GeneratePla
   const targetCareer = extractTargetCareer(userMessages.map(m => m.content));
   const currentCareer = profile.currentJobTitle || profile.currentEmploymentStatus;
 
-  // Generate plan using AI
-  const result = await generateObject({
-    model: aiModel,
-    system: getPlanGeneratorSystemPrompt({
-      profile,
-      conversationSummary,
-      currentCareer,
-      targetCareer,
-    }),
-    prompt: `Generate a comprehensive career transition plan from "${currentCareer}" to "${targetCareer}". Focus on Kansas-specific resources, programs, job listings, and salary data. Be thorough and provide actionable steps with real resources.`,
-    schema: planSchema,
-    schemaName: 'CareerPlan',
-    schemaDescription: 'A comprehensive career transition plan with phases, milestones, tasks, and resources',
-  });
+  // Generate plan using AI with retry logic
+  let generatedPlan;
+  let lastError;
+  const maxRetries = 3;
 
-  const generatedPlan = result.object;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await generateObject({
+        model: aiModel,
+        system: getPlanGeneratorSystemPrompt({
+          profile,
+          conversationSummary,
+          currentCareer,
+          targetCareer,
+        }),
+        prompt: `Generate a comprehensive career transition plan from "${currentCareer}" to "${targetCareer}".
+
+CRITICAL REQUIREMENTS (plan will be rejected if not met):
+- Create EXACTLY 3-5 phases (minimum 3)
+- EACH phase needs EXACTLY 3-6 milestones (minimum 3)
+- EACH milestone needs EXACTLY 3-8 tasks (minimum 3)
+- EACH milestone needs AT LEAST 1 resource
+
+Focus on Kansas-specific resources and realistic timelines based on ${profile.availableHoursPerWeek} hours/week availability.${attempt > 1 ? `\n\nPrevious attempt failed validation. Ensure ALL minimums are met.` : ''}`,
+        schema: planSchema,
+        schemaName: 'CareerPlan',
+        schemaDescription: 'A comprehensive career transition plan with phases, milestones, tasks, and resources',
+      });
+
+      generatedPlan = result.object;
+      break; // Success - exit retry loop
+    } catch (error) {
+      lastError = error;
+      console.error(`Plan generation attempt ${attempt} failed:`, error);
+
+      if (attempt === maxRetries) {
+        // All retries failed - throw the error
+        throw new Error(
+          `Failed to generate valid plan after ${maxRetries} attempts. Last error: ${
+            error instanceof Error ? error.message : 'Unknown error'
+          }`
+        );
+      }
+
+      // Wait a bit before retrying (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+    }
+  }
+
+  if (!generatedPlan) {
+    throw new Error('Failed to generate plan - no result after retries');
+  }
 
   // Save plan to database
   const [savedPlan] = await db
