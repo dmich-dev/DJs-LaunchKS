@@ -62,19 +62,24 @@ export default function IntakePage() {
     sendMessage({ text });
   };
 
-  // Show "Generate Plan" button after sufficient exchanges (~10 messages from user)
+  // Show "Generate Plan" button after sufficient exchanges (~8 messages from user)
   const userMessageCount = messages.filter(m => m.role === 'user').length;
-  const showGenerateButton = userMessageCount >= 10 && conversationId;
+  const showGenerateButton = userMessageCount >= 8 && conversationId;
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground p-4 border-b">
-        <div className="container mx-auto">
-          <h1 className="text-xl font-bold">Career Planning Conversation</h1>
-          <p className="text-sm opacity-90">Let's explore your career goals together</p>
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-gray-50">
+      {/* Chat Header */}
+      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-3 md:px-6 md:py-4">
+        <div className="max-w-4xl mx-auto flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFC107] to-[#FFD54F] flex items-center justify-center shadow-sm">
+            <span className="text-[#223344] font-bold text-lg">L</span>
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-[#223344]">Career Planning Assistant</h1>
+            <p className="text-xs text-gray-500">Share your goals and let&apos;s build your path</p>
+          </div>
         </div>
-      </header>
+      </div>
 
       {/* Messages */}
       <MessageList

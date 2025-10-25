@@ -47,15 +47,8 @@ export default async function DashboardPage() {
 
   if (!activePlan) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="border-b bg-background">
-          <div className="container mx-auto flex h-16 items-center px-4">
-            <h1 className="text-xl font-semibold">Dashboard</h1>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-8">
-          <NoPlanState />
-        </main>
+      <div className="container mx-auto px-4 py-8">
+        <NoPlanState />
       </div>
     );
   }
@@ -65,15 +58,8 @@ export default async function DashboardPage() {
 
   if (!planWithDetails) {
     return (
-      <div className="min-h-screen bg-background">
-        <header className="border-b bg-background">
-          <div className="container mx-auto flex h-16 items-center px-4">
-            <h1 className="text-xl font-semibold">Dashboard</h1>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-8">
-          <NoPlanState />
-        </main>
+      <div className="container mx-auto px-4 py-8">
+        <NoPlanState />
       </div>
     );
   }
@@ -84,15 +70,7 @@ export default async function DashboardPage() {
   const upcomingMilestones = getUpcomingMilestones(planWithDetails, 3);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background">
-        <div className="container mx-auto flex h-16 items-center px-4">
-          <h1 className="text-xl font-semibold">Dashboard</h1>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Welcome Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-8 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
@@ -134,7 +112,6 @@ export default async function DashboardPage() {
             </div>
           </div>
         )}
-      </main>
     </div>
   );
 }

@@ -16,12 +16,12 @@ export default function LandingPage() {
             <span className="font-bold text-xl text-primary">LaunchKS</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="link" className="text-secondary">Log In</Button>
-            </Link>
-            <Link href="/signup">
-              <Button>Get Started</Button>
-            </Link>
+            <Button variant="link" className="text-secondary" asChild>
+              <Link href="/login">Log In</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/signup">Get Started</Link>
+            </Button>
           </div>
         </div>
       </nav>
@@ -45,17 +45,17 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup">
-              <Button size="lg" className="text-lg px-8">
+            <Button size="lg" className="text-lg px-8" asChild>
+              <Link href="/signup">
                 Start Your Journey
                 <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="#features">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
+              </Link>
+            </Button>
+            <Button size="lg" variant="secondary" className="text-lg px-8" asChild>
+              <Link href="#features">
                 Learn More
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
 
           {/* Stats */}
@@ -181,12 +181,12 @@ export default function LandingPage() {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Join hundreds of Kansas residents who have successfully transitioned to fulfilling careers with LaunchKS
               </p>
-              <Link href="/signup">
-                <Button size="lg" className="text-lg px-12">
+              <Button size="lg" className="text-lg px-12" asChild>
+                <Link href="/signup">
                   Get Started Free
                   <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <p className="text-sm text-muted-foreground">
                 No credit card required • 100% free for Kansas residents
               </p>

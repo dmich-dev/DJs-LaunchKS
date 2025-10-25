@@ -54,21 +54,7 @@ export default async function SettingsPage() {
   const userAccount = users[0];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background sticky top-0 z-10">
-        <div className="container mx-auto flex h-16 items-center px-4 gap-4">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Dashboard
-            </Button>
-          </Link>
-          <h1 className="text-xl font-semibold">Settings</h1>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-primary mb-2">Account Settings</h2>
           <p className="text-muted-foreground">
@@ -119,7 +105,6 @@ export default async function SettingsPage() {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
     </div>
   );
 }

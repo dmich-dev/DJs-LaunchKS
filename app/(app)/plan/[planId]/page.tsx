@@ -57,21 +57,7 @@ export default async function PlanPage({ params }: PlanPageProps) {
   const progress = calculateOverallProgress(planWithDetails);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background sticky top-0 z-10">
-        <div className="container mx-auto flex h-16 items-center px-4 gap-4">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Dashboard
-            </Button>
-          </Link>
-          <h1 className="text-xl font-semibold">Career Plan</h1>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Plan Overview */}
         <PlanOverview plan={planData} progress={progress} />
 
@@ -118,16 +104,6 @@ export default async function PlanPage({ params }: PlanPageProps) {
           )}
         </div>
 
-        {/* Back to Dashboard Button */}
-        <div className="flex justify-center pt-8">
-          <Link href="/dashboard">
-            <Button variant="outline" size="lg">
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </Link>
-        </div>
-      </main>
     </div>
   );
 }
