@@ -4,7 +4,7 @@ export const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-export const FROM_EMAIL = 'App <noreply@resend.dev>';
+export const FROM_EMAIL = 'App <noreply@propelprep.com>';
 
 export async function sendEmail({
   to,
