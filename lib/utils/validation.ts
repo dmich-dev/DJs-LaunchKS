@@ -6,7 +6,7 @@ export const userProfileSchema = z.object({
   lastName: z.string().min(1, 'Last name is required').max(50),
   location: z.string().min(1, 'Location is required').max(100),
   phoneNumber: z.string().optional().nullable(),
-  isKansasResident: z.boolean().default(true),
+  isKansasResident: z.boolean(),
   currentEmploymentStatus: z.enum(['employed', 'unemployed', 'student', 'other']),
   currentJobTitle: z.string().max(100).optional().nullable(),
   currentIndustry: z.string().max(100).optional().nullable(),
@@ -17,7 +17,7 @@ export const userProfileSchema = z.object({
   hasTransportation: z.boolean(),
   financialSituation: z.enum(['can_afford_paid', 'needs_free_only', 'needs_assistance']),
   learningPreference: z.enum(['online', 'in_person', 'hybrid', 'self_paced']),
-  barriers: z.array(z.string()).optional().default([]),
+  barriers: z.array(z.string()),
 });
 
 export type UserProfileInput = z.infer<typeof userProfileSchema>;

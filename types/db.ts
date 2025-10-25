@@ -16,3 +16,11 @@ export type InsertNotificationPreference = InferInsertModel<typeof schema.notifi
 // Email types
 export type Email = InferSelectModel<typeof schema.email>;
 export type InsertEmail = InferInsertModel<typeof schema.email>;
+
+// Conversation types
+export type Conversation = InferSelectModel<typeof schema.conversation>;
+export type InsertConversation = InferInsertModel<typeof schema.conversation>;
+
+// Message types
+export type Message = InferSelectModel<typeof schema.message>;
+export type InsertMessage = InferInsertModel<typeof schema.message>;

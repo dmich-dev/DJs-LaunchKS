@@ -138,3 +138,37 @@ export const user = pgTable(
     index('email_type_idx').on(table.type),
     index('email_status_idx').on(table.status),
   ]);
+
+  export const conversation = pgTable('conversation', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    type: text('type', {
+      enum: ['intake', 'general', 'plan_refinement']
+    }).notNull().default('general'),
+    status: text('status', {
+      enum: ['active', 'completed', 'archived']
+    }).notNull().default('active'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  }, (table) => [
+    index('conversation_user_id_idx').on(table.userId),
+    index('conversation_type_idx').on(table.type),
+    index('conversation_status_idx').on(table.status),
+  ]);
+
+  export const message = pgTable('message', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    conversationId: text('conversation_id')
+      .notNull()
+      .references(() => conversation.id, { onDelete: 'cascade' }),
+    role: text('role', { enum: ['user', 'assistant'] }).notNull(),
+    content: text('content').notNull(),
+    toolInvocations: text('tool_invocations'), // JSON stringified array of tool calls
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('message_conversation_id_idx').on(table.conversationId),
+    index('message_created_at_idx').on(table.createdAt),
+  ]);
