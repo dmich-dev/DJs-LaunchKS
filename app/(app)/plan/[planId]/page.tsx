@@ -10,6 +10,7 @@ import {
 } from '@/lib/utils/plan-helpers';
 import { PlanOverview } from '@/components/plan/plan-overview';
 import { PhaseCard } from '@/components/plan/phase-card';
+import { TimelineView } from '@/components/plan/timeline-view';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -73,6 +74,23 @@ export default async function PlanPage({ params }: PlanPageProps) {
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Plan Overview */}
         <PlanOverview plan={planData} progress={progress} />
+
+        {/* Timeline Visualization */}
+        {planWithDetails.phases.length > 0 && (
+          <TimelineView
+            phases={planWithDetails.phases.map((phase: any) => ({
+              id: phase.id,
+              title: phase.title,
+              estimatedDuration: phase.estimatedDuration,
+              status: phase.milestones?.every((m: any) => m.isCompleted)
+                ? 'completed'
+                : phase.milestones?.some((m: any) => m.isCompleted)
+                ? 'in_progress'
+                : 'not_started',
+              orderIndex: phase.orderIndex,
+            }))}
+          />
+        )}
 
         {/* Phases */}
         <div className="space-y-8">

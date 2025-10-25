@@ -1,12 +1,18 @@
-import { CheckCircle, Circle, AlertCircle } from 'lucide-react';
+'use client';
+
+import { useState } from 'react';
+import { CheckCircle, Circle, AlertCircle, X } from 'lucide-react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { TaskList } from './task-list';
 import { ResourceList } from './resource-list';
 import { type Milestone, type Task, type Resource } from '@/types/db';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface MilestoneCardProps {
   milestone: Milestone & {
@@ -18,10 +24,65 @@ interface MilestoneCardProps {
 }
 
 export function MilestoneCard({ milestone, planId, index }: MilestoneCardProps) {
+  const router = useRouter();
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
+  
   const completedTasks = milestone.tasks.filter((t) => t.isCompleted).length;
   const totalTasks = milestone.tasks.length;
   const progress =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  const handleComplete = async () => {
+    if (progress < 100) {
+      toast.error('Please complete all tasks before marking the milestone as complete');
+      return;
+    }
+
+    setIsCompleting(true);
+    try {
+      const response = await fetch('/api/plan/milestones/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ milestoneId: milestone.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to complete milestone');
+      }
+
+      toast.success('Milestone completed! 🎊');
+      router.refresh();
+    } catch (error) {
+      console.error('Error completing milestone:', error);
+      toast.error('Failed to complete milestone');
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    setIsSkipping(true);
+    try {
+      const response = await fetch('/api/plan/milestones/skip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ milestoneId: milestone.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to skip milestone');
+      }
+
+      toast.success('Milestone skipped');
+      router.refresh();
+    } catch (error) {
+      console.error('Error skipping milestone:', error);
+      toast.error('Failed to skip milestone');
+    } finally {
+      setIsSkipping(false);
+    }
+  };
 
   return (
     <AccordionItem
@@ -103,6 +164,28 @@ export function MilestoneCard({ milestone, planId, index }: MilestoneCardProps) 
               Resources ({milestone.resources.length})
             </h4>
             <ResourceList resources={milestone.resources} />
+          </div>
+        )}
+
+        {/* Actions */}
+        {!milestone.isCompleted && (
+          <div className="flex gap-2 pt-4 border-t">
+            <Button
+              onClick={handleComplete}
+              disabled={isCompleting || progress < 100}
+              className="bg-success hover:bg-success/90 text-white"
+            >
+              {isCompleting ? 'Completing...' : 'Mark as Complete'}
+            </Button>
+            <Button
+              onClick={handleSkip}
+              disabled={isSkipping}
+              variant="outline"
+              className="text-muted-foreground"
+            >
+              <X className="w-4 h-4 mr-2" />
+              {isSkipping ? 'Skipping...' : 'Skip Milestone'}
+            </Button>
           </div>
         )}
 

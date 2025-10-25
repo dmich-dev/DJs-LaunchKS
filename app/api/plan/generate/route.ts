@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { generateCareerPlan } from '@/lib/ai/plan-generator';
+import { sendPlanReadyEmail } from '@/lib/email/resend';
+import { db } from '@/lib/db';
+import { userProfile } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(req: Request) {
   try {
@@ -31,6 +35,29 @@ export async function POST(req: Request) {
       userId: session.user.id,
       conversationId,
     });
+
+    // Send plan ready email
+    try {
+      const profiles = await db
+        .select()
+        .from(userProfile)
+        .where(eq(userProfile.userId, session.user.id))
+        .limit(1);
+
+      if (profiles.length > 0) {
+        await sendPlanReadyEmail({
+          userId: session.user.id,
+          to: session.user.email,
+          firstName: profiles[0].firstName,
+          targetCareer: generatedPlan.targetCareer,
+          estimatedDuration: generatedPlan.estimatedDuration,
+          planId: generatedPlan.id,
+        });
+      }
+    } catch (emailError) {
+      // Log email error but don't fail the request
+      console.error('Failed to send plan ready email:', emailError);
+    }
 
     return NextResponse.json({
       success: true,
