@@ -2,14 +2,14 @@ import { openai } from '@ai-sdk/openai';
 
 /**
  * OpenAI model configuration for LaunchKS
- * Using GPT-4 for high-quality career guidance
+ * Using GPT-5 for high-quality career guidance with structured outputs
  */
-export const aiModel = openai('gpt-4-turbo-preview');
+export const aiModel = openai('gpt-5');
 
 /**
  * Alternative model for less critical tasks (cost optimization)
  */
-export const aiModelFast = openai('gpt-3.5-turbo');
+export const aiModelFast = openai('gpt-5-mini');
 
 /**
  * AI generation settings

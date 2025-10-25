@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Sparkles } from 'lucide-react';
 
@@ -13,7 +13,7 @@ const LOADING_MESSAGES = [
   'Adding Kansas-specific resources...',
 ];
 
-export default function GeneratingPage() {
+function GeneratingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [messageIndex, setMessageIndex] = useState(0);
@@ -123,5 +123,34 @@ export default function GeneratingPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function GeneratingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted p-4">
+          <div className="max-w-md w-full text-center">
+            <div className="relative w-32 h-32 mx-auto mb-8">
+              <div className="relative w-32 h-32 bg-accent rounded-full flex items-center justify-center">
+                <Sparkles className="w-16 h-16 text-accent-foreground animate-pulse" />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-primary mb-4">
+              Creating Your Career Plan
+            </h1>
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="w-5 h-5 animate-spin text-accent" />
+              <span className="text-sm text-muted-foreground">
+                Loading...
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <GeneratingContent />
+    </Suspense>
   );
 }

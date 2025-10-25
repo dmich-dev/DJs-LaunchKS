@@ -38,15 +38,18 @@ export async function GET(request: Request) {
         estimatedDuration: plan.estimatedDuration,
         lastActivityAt: plan.lastActivityAt,
         emailReminders: notificationPreference.emailReminders,
+        reminderFrequency: notificationPreference.reminderFrequency,
       })
       .from(user)
       .innerJoin(userProfile, eq(userProfile.userId, user.id))
       .innerJoin(plan, eq(plan.userId, user.id))
-      .leftJoin(notificationPreference, eq(notificationPreference.userId, user.id))
+      .innerJoin(notificationPreference, eq(notificationPreference.userId, user.id))
       .where(
         and(
           eq(plan.status, 'active'),
-          lte(plan.lastActivityAt, sevenDaysAgo)
+          lte(plan.lastActivityAt, sevenDaysAgo),
+          eq(notificationPreference.emailReminders, true),
+          eq(notificationPreference.reminderFrequency, 'weekly')
         )
       );
 
