@@ -17,29 +17,8 @@ export function GeneratePlanCTA({ conversationId }: GeneratePlanCTAProps) {
   const handleGenerate = async () => {
     setIsGenerating(true);
 
-    // Redirect immediately to generating page
-    router.push('/plan/generating');
-
-    // Start generation in background
-    try {
-      const response = await fetch('/api/plan/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to start plan generation');
-      }
-
-      const { planId } = await response.json();
-
-      // Redirect to plan view
-      router.push(`/plan/${planId}`);
-    } catch (error) {
-      console.error('Plan generation error:', error);
-      // User is already on generating page, error will be handled there
-    }
+    // Redirect immediately to generating page with conversationId
+    router.push(`/plan/generating?conversationId=${conversationId}`);
   };
 
   return (

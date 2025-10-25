@@ -29,15 +29,39 @@ export default function GeneratingPage() {
   }, []);
 
   useEffect(() => {
-    // The generation should already be in progress from the intake page
-    // Poll for plan completion or redirect after a timeout
-    const checkTimeout = setTimeout(() => {
-      // After 2 minutes, redirect to dashboard
-      router.push('/dashboard');
-    }, 120000); // 2 minutes
+    const conversationId = searchParams.get('conversationId');
 
-    return () => clearTimeout(checkTimeout);
-  }, [router]);
+    if (!conversationId) {
+      setError('No conversation ID provided. Please start a conversation first.');
+      return;
+    }
+
+    // Start plan generation
+    const generatePlan = async () => {
+      try {
+        const response = await fetch('/api/plan/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ conversationId }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to generate plan');
+        }
+
+        const { planId } = await response.json();
+
+        // Redirect to plan view
+        router.push(`/plan/${planId}`);
+      } catch (err) {
+        console.error('Plan generation error:', err);
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      }
+    };
+
+    generatePlan();
+  }, [router, searchParams]);
 
   if (error) {
     return (

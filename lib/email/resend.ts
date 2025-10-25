@@ -90,7 +90,6 @@ async function canSendEmail(
   type: 'reminder' | 'milestone' | 'phase'
 ): Promise<boolean> {
   try {
-    // @ts-ignore - Drizzle ORM version mismatch between dependencies
     const prefs = await db
       .select()
       .from(notificationPreference)
