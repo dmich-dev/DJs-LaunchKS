@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "App",
-  description: "App",
+  title: "LaunchKS | Where Kansans Take Off",
+  description: "Career transition platform for Kansas residents - powered by the Kansas Department of Labor",
 };
 
 export default function RootLayout({
