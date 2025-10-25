@@ -24,3 +24,23 @@ export type InsertConversation = InferInsertModel<typeof schema.conversation>;
 // Message types
 export type Message = InferSelectModel<typeof schema.message>;
 export type InsertMessage = InferInsertModel<typeof schema.message>;
+
+// Plan types
+export type Plan = InferSelectModel<typeof schema.plan>;
+export type InsertPlan = InferInsertModel<typeof schema.plan>;
+
+// Phase types
+export type Phase = InferSelectModel<typeof schema.phase>;
+export type InsertPhase = InferInsertModel<typeof schema.phase>;
+
+// Milestone types
+export type Milestone = InferSelectModel<typeof schema.milestone>;
+export type InsertMilestone = InferInsertModel<typeof schema.milestone>;
+
+// Task types
+export type Task = InferSelectModel<typeof schema.task>;
+export type InsertTask = InferInsertModel<typeof schema.task>;
+
+// Resource types
+export type Resource = InferSelectModel<typeof schema.resource>;
+export type InsertResource = InferInsertModel<typeof schema.resource>;

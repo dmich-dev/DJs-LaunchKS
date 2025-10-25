@@ -172,3 +172,95 @@ export const user = pgTable(
     index('message_conversation_id_idx').on(table.conversationId),
     index('message_created_at_idx').on(table.createdAt),
   ]);
+
+  export const plan = pgTable('plan', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    conversationId: text('conversation_id')
+      .references(() => conversation.id, { onDelete: 'set null' }),
+    targetCareer: text('target_career').notNull(),
+    currentCareer: text('current_career'),
+    estimatedDuration: text('estimated_duration').notNull(),
+    salaryExpectationsEntry: text('salary_expectations_entry'),
+    salaryExpectationsExperienced: text('salary_expectations_experienced'),
+    jobMarketOutlook: text('job_market_outlook'),
+    status: text('status', {
+      enum: ['active', 'completed', 'archived']
+    }).notNull().default('active'),
+    generatedAt: timestamp('generated_at').notNull().defaultNow(),
+    lastActivityAt: timestamp('last_activity_at').notNull().defaultNow(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  }, (table) => [
+    index('plan_user_id_idx').on(table.userId),
+    index('plan_status_idx').on(table.status),
+  ]);
+
+  export const phase = pgTable('phase', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    planId: text('plan_id')
+      .notNull()
+      .references(() => plan.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    estimatedDuration: text('estimated_duration').notNull(),
+    orderIndex: integer('order_index').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('phase_plan_id_idx').on(table.planId),
+  ]);
+
+  export const milestone = pgTable('milestone', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    phaseId: text('phase_id')
+      .notNull()
+      .references(() => phase.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    orderIndex: integer('order_index').notNull(),
+    completionCriteria: text('completion_criteria').notNull(),
+    verificationRequired: boolean('verification_required').notNull().default(false),
+    isCompleted: boolean('is_completed').notNull().default(false),
+    completedAt: timestamp('completed_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('milestone_phase_id_idx').on(table.phaseId),
+  ]);
+
+  export const task = pgTable('task', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    milestoneId: text('milestone_id')
+      .notNull()
+      .references(() => milestone.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    orderIndex: integer('order_index').notNull(),
+    isCompleted: boolean('is_completed').notNull().default(false),
+    completedAt: timestamp('completed_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('task_milestone_id_idx').on(table.milestoneId),
+  ]);
+
+  export const resource = pgTable('resource', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    milestoneId: text('milestone_id')
+      .notNull()
+      .references(() => milestone.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    url: text('url').notNull(),
+    type: text('type', {
+      enum: ['course', 'certification', 'program', 'job_listing', 'article', 'video', 'other']
+    }).notNull(),
+    cost: text('cost').notNull(),
+    duration: text('duration'),
+    location: text('location', { enum: ['online', 'in_person', 'hybrid'] }),
+    provider: text('provider'),
+    isAccredited: boolean('is_accredited'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  }, (table) => [
+    index('resource_milestone_id_idx').on(table.milestoneId),
+  ]);

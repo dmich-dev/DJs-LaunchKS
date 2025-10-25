@@ -33,7 +33,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Redirects to dashboard if already authenticated
+ * Redirects to appropriate page if already authenticated
+ * - If no profile: redirect to /onboarding
+ * - If has profile: redirect to /dashboard
  */
 export function GuestRoute({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
@@ -41,7 +43,20 @@ export function GuestRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isPending && session) {
-      router.push('/dashboard');
+      // Check if user has completed onboarding
+      fetch('/api/profile')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            router.push('/dashboard');
+          } else {
+            router.push('/onboarding');
+          }
+        })
+        .catch(() => {
+          // If profile fetch fails, assume needs onboarding
+          router.push('/onboarding');
+        });
     }
   }, [session, isPending, router]);
 

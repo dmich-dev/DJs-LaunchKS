@@ -96,7 +96,7 @@ export default function OnboardingPage() {
       }
 
       toast.success('Profile created successfully!');
-      router.push('/dashboard');
+      router.push('/intake');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Something went wrong');
     } finally {

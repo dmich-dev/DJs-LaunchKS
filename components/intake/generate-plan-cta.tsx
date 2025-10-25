@@ -17,6 +17,10 @@ export function GeneratePlanCTA({ conversationId }: GeneratePlanCTAProps) {
   const handleGenerate = async () => {
     setIsGenerating(true);
 
+    // Redirect immediately to generating page
+    router.push('/plan/generating');
+
+    // Start generation in background
     try {
       const response = await fetch('/api/plan/generate', {
         method: 'POST',
@@ -28,11 +32,13 @@ export function GeneratePlanCTA({ conversationId }: GeneratePlanCTAProps) {
         throw new Error('Failed to start plan generation');
       }
 
-      // Redirect to generating page
-      router.push('/plan/generating');
+      const { planId } = await response.json();
+
+      // Redirect to plan view
+      router.push(`/plan/${planId}`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong');
-      setIsGenerating(false);
+      console.error('Plan generation error:', error);
+      // User is already on generating page, error will be handled there
     }
   };
 
