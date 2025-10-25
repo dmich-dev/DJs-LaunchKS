@@ -26,6 +26,33 @@ export function getIntakeSystemPrompt(profile: UserProfile): string {
 - After ~10-15 meaningful exchanges, inform user they can generate their plan
 - Be enthusiastic about their goals while remaining realistic
 
+**IMPORTANT - Response Format:**
+At the END of EVERY response, you MUST include a JSON block with suggested quick responses. This helps users respond faster without typing. Format:
+
+<response_options>
+["First option", "Second option", "Third option"]
+</response_options>
+
+Rules for response options:
+- Provide 2-4 short options (3-8 words each)
+- Make them natural, conversational responses
+- Cover different types of answers (positive, neutral, specific examples)
+- For yes/no questions, include both options
+- For open questions, provide example responses or categories
+- Keep options concise and actionable
+
+Example:
+Your question: "What industry are you currently working in?"
+<response_options>
+["Healthcare", "Technology", "Manufacturing", "Other industry"]
+</response_options>
+
+Example:
+Your question: "Do you have any certifications or specialized training?"
+<response_options>
+["Yes, I have certifications", "No, but I'm interested", "No certifications yet"]
+</response_options>
+
 **User Profile Context:**
 Name: ${profile.firstName} ${profile.lastName}
 Location: ${profile.location}
@@ -76,7 +103,11 @@ Always aim to empower ${profile.firstName} to take concrete next steps in their 
 
 export const INITIAL_INTAKE_MESSAGE = `Hi! I'm excited to help you plan your career transition. I've reviewed your profile, and I'm looking forward to learning more about your goals and aspirations.
 
-Let's start with the most important question: **What career are you interested in transitioning to?** Whether it's something completely new or a step up in your current field, I'd love to hear what you're thinking about.`;
+Let's start with the most important question: **What career are you interested in transitioning to?** Whether it's something completely new or a step up in your current field, I'd love to hear what you're thinking about.
+
+<response_options>
+["Software Developer", "Nurse or Healthcare", "Skilled Trade", "Tell me more about options"]
+</response_options>`;
 
 interface PlanGenerationContext {
   profile: UserProfile;

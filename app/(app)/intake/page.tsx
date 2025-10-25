@@ -2,17 +2,23 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useState, useEffect } from 'react';
 import { MessageList } from '@/components/intake/message-list';
 import { ChatInput } from '@/components/intake/chat-input';
 import { GeneratePlanCTA } from '@/components/intake/generate-plan-cta';
 import { INITIAL_INTAKE_MESSAGE } from '@/lib/ai';
 
+type MessageMetadata = {
+  conversationId?: string;
+};
+
+type IntakeMessage = UIMessage<MessageMetadata>;
+
 export default function IntakePage() {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [input, setInput] = useState('');
 
-  const { messages, sendMessage, status } = useChat<UIMessage>({
+  const { messages, sendMessage, status } = useChat<IntakeMessage>({
     transport: new DefaultChatTransport({
       api: '/api/intake/chat',
       body: () => ({
@@ -28,6 +34,16 @@ export default function IntakePage() {
     ],
   });
 
+  // Extract conversation ID from message metadata
+  useEffect(() => {
+    const firstAssistantMessage = messages.find(
+      (m) => m.role === 'assistant' && m.metadata?.conversationId
+    );
+    if (firstAssistantMessage?.metadata?.conversationId && !conversationId) {
+      setConversationId(firstAssistantMessage.metadata.conversationId);
+    }
+  }, [messages, conversationId]);
+
   const isLoading = status === 'submitted' || status === 'streaming';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,6 +56,10 @@ export default function IntakePage() {
       sendMessage({ text: input });
       setInput('');
     }
+  };
+
+  const handleQuickResponse = (text: string) => {
+    sendMessage({ text });
   };
 
   // Show "Generate Plan" button after sufficient exchanges (~10 messages from user)
@@ -57,7 +77,11 @@ export default function IntakePage() {
       </header>
 
       {/* Messages */}
-      <MessageList messages={messages} isLoading={isLoading} />
+      <MessageList
+        messages={messages}
+        isLoading={isLoading}
+        onQuickResponse={handleQuickResponse}
+      />
 
       {/* Generate Button */}
       {showGenerateButton && <GeneratePlanCTA conversationId={conversationId} />}

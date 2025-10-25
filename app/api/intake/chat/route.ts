@@ -111,6 +111,9 @@ export async function POST(req: Request) {
       headers: {
         'X-Conversation-Id': currentConversation.id,
       },
+      messageMetadata: () => ({
+        conversationId: currentConversation.id,
+      }),
     });
   } catch (error) {
     console.error('Intake chat error:', error);
