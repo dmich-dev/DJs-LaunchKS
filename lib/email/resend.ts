@@ -14,7 +14,7 @@ export const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-export const FROM_EMAIL = 'LaunchKS <noreply@propelprep.>';
+export const FROM_EMAIL = 'LaunchKS <noreply@propelprep.com>';
 
 export interface SendEmailOptions {
   to: string | string[];
