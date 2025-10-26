@@ -46,6 +46,17 @@ export const auth = betterAuth({
     session: {
         expiresIn: 60 * 60 * 24 * 30,
         updateAge: 60 * 60 * 24,
+        fetchUser: true, // Ensure user data is fetched with session
+    },
+
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                required: true,
+                defaultValue: "user",
+            },
+        },
     },
 
     rateLimit: {

@@ -57,7 +57,8 @@ export default async function PlanPage({ params }: PlanPageProps) {
   const progress = calculateOverallProgress(planWithDetails);
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Plan Overview */}
         <PlanOverview plan={planData} progress={progress} />
 
@@ -80,10 +81,18 @@ export default async function PlanPage({ params }: PlanPageProps) {
 
         {/* Phases */}
         <div className="space-y-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-primary">
-              Your Journey ({planWithDetails.phases.length} Phases)
-            </h2>
+          <div className="flex items-center justify-between bg-white p-6 rounded-xl border-2 border-gray-200 shadow-sm">
+            <div>
+              <h2 className="text-3xl font-bold text-[#223344]">
+                Your Journey
+              </h2>
+              <p className="text-gray-600 mt-1">
+                {planWithDetails.phases.length} {planWithDetails.phases.length === 1 ? 'Phase' : 'Phases'} to complete
+              </p>
+            </div>
+            <div className="bg-[#FFC107] text-[#223344] px-6 py-3 rounded-full font-bold text-lg shadow-md">
+              {progress.overall}% Complete
+            </div>
           </div>
 
           {planWithDetails.phases.length > 0 ? (
@@ -96,14 +105,17 @@ export default async function PlanPage({ params }: PlanPageProps) {
               />
             ))
           ) : (
-            <div className="bg-muted/50 border border-dashed rounded-lg p-12 text-center">
-              <p className="text-muted-foreground">
+            <div className="bg-white border-2 border-dashed border-gray-300 rounded-xl p-16 text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-4xl text-gray-400">📋</span>
+              </div>
+              <p className="text-gray-500 text-lg font-medium">
                 No phases have been generated for this plan yet.
               </p>
             </div>
           )}
         </div>
-
+      </div>
     </div>
   );
 }

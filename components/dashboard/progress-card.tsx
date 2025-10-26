@@ -14,12 +14,12 @@ export function ProgressCard({ progress }: ProgressCardProps) {
   const strokeDashoffset = circumference - (progress.overall / 100) * circumference;
 
   return (
-    <Card className="border-accent border-2">
-      <CardHeader className="bg-primary text-primary-foreground">
-        <CardTitle>Your Progress</CardTitle>
+    <Card className="border-2 border-gray-200 hover:border-[#FFC107] transition-all shadow-sm hover:shadow-md">
+      <CardHeader className="bg-[#223344] text-white">
+        <CardTitle className="text-lg font-semibold">Your Progress</CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
-        <div className="flex items-center justify-center">
+      <CardContent className="pt-8 pb-6">
+        <div className="flex items-center justify-center relative mb-6">
           <svg width="140" height="140" className="transform -rotate-90">
             {/* Background circle */}
             <circle
@@ -27,9 +27,8 @@ export function ProgressCard({ progress }: ProgressCardProps) {
               cy="70"
               r={radius}
               fill="none"
-              stroke="currentColor"
-              strokeWidth="12"
-              className="text-muted"
+              stroke="#E9ECEF"
+              strokeWidth="10"
             />
             {/* Progress circle */}
             <circle
@@ -37,27 +36,27 @@ export function ProgressCard({ progress }: ProgressCardProps) {
               cy="70"
               r={radius}
               fill="none"
-              stroke="currentColor"
-              strokeWidth="12"
+              stroke="#FFC107"
+              strokeWidth="10"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
-              className="text-accent transition-all duration-500"
+              className="transition-all duration-500"
             />
           </svg>
           <div className="absolute text-center">
-            <p className="text-3xl font-bold text-primary">{progress.overall}%</p>
-            <p className="text-xs text-muted-foreground">Complete</p>
+            <p className="text-4xl font-bold text-[#223344]">{progress.overall}%</p>
+            <p className="text-xs text-gray-600 mt-1">Complete</p>
           </div>
         </div>
-        <div className="mt-6 space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Days Active:</span>
-            <span className="font-semibold">{progress.daysActive}</span>
+        <div className="space-y-3 px-2">
+          <div className="flex justify-between items-center py-2 border-b border-gray-100">
+            <span className="text-sm text-gray-600">Days Active</span>
+            <span className="font-bold text-[#223344] text-lg">{progress.daysActive}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Current Phase:</span>
-            <span className="font-semibold text-right">{progress.currentPhase}</span>
+          <div className="flex justify-between items-start py-2">
+            <span className="text-sm text-gray-600">Current Phase</span>
+            <span className="font-semibold text-[#223344] text-right text-sm max-w-[140px]">{progress.currentPhase}</span>
           </div>
         </div>
       </CardContent>

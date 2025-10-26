@@ -48,7 +48,7 @@ export default async function AdminPage() {
     .where(eq(plan.status, 'active'));
 
   // Get recent users (last 10)
-  const recentUsers = await db
+  const recentUsersRaw = await db
     .select({
       id: user.id,
       name: user.name,
@@ -59,9 +59,19 @@ export default async function AdminPage() {
     })
     .from(user)
     .leftJoin(userProfile, eq(userProfile.userId, user.id))
-    .leftJoin(plan, eq(plan.userId, user.id))
+    .leftJoin(plan, and(eq(plan.userId, user.id), eq(plan.status, 'active')))
     .orderBy(desc(user.createdAt))
-    .limit(10);
+    .limit(50);
+
+  // Deduplicate users (in case of multiple active plans)
+  const seenUserIds = new Set<string>();
+  const recentUsers = recentUsersRaw
+    .filter((u) => {
+      if (seenUserIds.has(u.id)) return false;
+      seenUserIds.add(u.id);
+      return true;
+    })
+    .slice(0, 10);
 
   // Get recent plans (last 10)
   const recentPlansList = await db

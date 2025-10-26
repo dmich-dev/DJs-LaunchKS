@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -29,11 +29,32 @@ interface AppNavProps {
 
 export function AppNav({ user, profile }: AppNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/intake', label: 'New Plan', icon: MessageSquare },
   ];
+
+  const handleSignOut = async () => {
+    try {
+      // Call Better Auth sign-out endpoint
+      await fetch('/api/auth/sign-out', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      // Always redirect regardless of response
+      // (Better Auth returns empty response on success)
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Still redirect even if there's an error
+      window.location.href = '/';
+    }
+  };
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -131,13 +152,9 @@ export function AppNav({ user, profile }: AppNavProps) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem asChild>
-              <form action="/api/auth/sign-out" method="POST" className="w-full">
-                <button type="submit" className="w-full flex items-center cursor-pointer">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </button>
-              </form>
+            <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

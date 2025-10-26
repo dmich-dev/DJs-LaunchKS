@@ -1,13 +1,13 @@
 import { db } from '@/lib/db';
 import { user, userProfile, plan } from '@/lib/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { formatDate } from '@/lib/utils';
 import { User, Mail, MapPin, Briefcase, CheckCircle2, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export default async function AdminUsersPage() {
-  // Get all users with their profiles and plans
-  const users = await db
+  // Get all users with their profiles and active plans only
+  const usersRaw = await db
     .select({
       id: user.id,
       name: user.name,
@@ -26,8 +26,16 @@ export default async function AdminUsersPage() {
     })
     .from(user)
     .leftJoin(userProfile, eq(userProfile.userId, user.id))
-    .leftJoin(plan, eq(plan.userId, user.id))
+    .leftJoin(plan, and(eq(plan.userId, user.id), eq(plan.status, 'active')))
     .orderBy(desc(user.createdAt));
+
+  // Deduplicate users (in case of multiple active plans per user)
+  const seenUserIds = new Set<string>();
+  const users = usersRaw.filter((u) => {
+    if (seenUserIds.has(u.id)) return false;
+    seenUserIds.add(u.id);
+    return true;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
