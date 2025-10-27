@@ -5,6 +5,8 @@ import { sendEmail } from "../email/resend";
 import { getPasswordResetEmailTemplate, getVerificationEmailTemplate } from "../email/templates";
 
 export const auth = betterAuth({
+    baseURL: env.BETTER_AUTH_URL || env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
+    
     database: drizzleAdapter(db, {
         provider: "pg",
     }),

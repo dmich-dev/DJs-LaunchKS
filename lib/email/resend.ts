@@ -3,6 +3,7 @@ import { render } from '@react-email/render';
 import { db } from '@/lib/db';
 import { email as emailTable, notificationPreference } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { getAppUrl } from '@/lib/utils/env';
 
 // Email templates
 import PlanReadyEmail from './templates/plan-ready';
@@ -126,7 +127,8 @@ export async function sendPlanReadyEmail(data: {
   estimatedDuration: string;
   planId: string;
 }) {
-  const planUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
+  const appUrl = getAppUrl();
+  const planUrl = `${appUrl}/plan/${data.planId}`;
 
   const html = await render(
     PlanReadyEmail({
@@ -190,7 +192,8 @@ export async function sendWeeklyReminderEmail(data: {
     return { success: false, reason: 'User opted out of reminders' };
   }
 
-  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
+  const appUrl = getAppUrl();
+  const dashboardUrl = `${appUrl}/dashboard`;
 
   const html = await render(
     WeeklyReminderEmail({
@@ -255,7 +258,8 @@ export async function sendMilestoneCompleteEmail(data: {
     return { success: false, reason: 'User opted out of milestone emails' };
   }
 
-  const planUrl = `${process.env.NEXT_PUBLIC_APP_URL}/plan`;
+  const appUrl = getAppUrl();
+  const planUrl = `${appUrl}/plan`;
 
   const html = await render(
     MilestoneCompleteEmail({
@@ -320,7 +324,8 @@ export async function sendPhaseCompleteEmail(data: {
     return { success: false, reason: 'User opted out of phase completion emails' };
   }
 
-  const planUrl = `${process.env.NEXT_PUBLIC_APP_URL}/plan`;
+  const appUrl = getAppUrl();
+  const planUrl = `${appUrl}/plan`;
 
   const html = await render(
     PhaseCompleteEmail({
@@ -372,7 +377,8 @@ export async function sendPhaseCompleteEmail(data: {
  * Helper to send verification email (keeps existing auth flow)
  */
 export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+  const appUrl = getAppUrl();
+  const verificationUrl = `${appUrl}/verify-email?token=${token}`;
 
   return sendEmail({
     to: email,
@@ -390,7 +396,8 @@ export async function sendVerificationEmail(email: string, token: string) {
  * Helper to send password reset email (keeps existing auth flow)
  */
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+  const appUrl = getAppUrl();
+  const resetUrl = `${appUrl}/reset-password?token=${token}`;
 
   return sendEmail({
     to: email,
