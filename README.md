@@ -622,6 +622,6 @@ This project was created for the 2025 Wichita Regional AI Prompt Competition. Al
 This submission was part of a complete competition portfolio:
 
 - **[ai_competition_oracle](https://github.com/jsperson/ai_competition_oracle)** - Oracle Track (Winner): Business plan and market research
-- **[ai_competition](https://github.com/jsperson/ai_competition)** - Muse Track (2nd Place): Kansas web games
+- **[ai_competition](https://github.com/jsperson/ai_competition)** - Architect Track (2nd Place): Kansas web games
 - **[ai_competition_2](https://github.com/jsperson/ai_competition_2)** - Challenge #4: Punchcard decoder
-- **challenge-1** (this repo) - Architect Track: LaunchKS platform
+- **challenge-1** (this repo) - Architect Track (Challenge #1): LaunchKS platform
