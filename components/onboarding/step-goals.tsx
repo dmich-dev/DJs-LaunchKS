@@ -31,13 +31,16 @@ export function StepGoals({ form }: StepGoalsProps) {
 
       <div className="space-y-2">
         <Label htmlFor="availableHoursPerWeek">
-          Available Hours Per Week
+          Available Hours Per Week <span className="text-destructive">*</span>
         </Label>
         <Input
           id="availableHoursPerWeek"
-          {...register('availableHoursPerWeek', { valueAsNumber: true })}
+          {...register('availableHoursPerWeek', { 
+            valueAsNumber: true,
+            setValueAs: (v) => v === '' ? undefined : Number(v)
+          })}
           type="number"
-          min="0"
+          min="1"
           max="168"
           placeholder="10"
         />

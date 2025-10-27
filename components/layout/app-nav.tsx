@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Plane, LayoutDashboard, MessageSquare, Settings, LogOut, User, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { signOut } from '@/lib/auth/client';
 
 interface AppNavProps {
   user: {
@@ -38,20 +39,10 @@ export function AppNav({ user, profile }: AppNavProps) {
 
   const handleSignOut = async () => {
     try {
-      // Call Better Auth sign-out endpoint
-      await fetch('/api/auth/sign-out', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      // Always redirect regardless of response
-      // (Better Auth returns empty response on success)
+      await signOut();
       window.location.href = '/';
     } catch (error) {
       console.error('Sign out error:', error);
-      // Still redirect even if there's an error
       window.location.href = '/';
     }
   };

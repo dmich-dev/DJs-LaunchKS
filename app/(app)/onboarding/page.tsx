@@ -90,28 +90,70 @@ export default function OnboardingPage() {
         body: JSON.stringify(data),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to save profile');
+        // Handle specific error types
+        if (response.status === 400) {
+          // Validation error
+          if (result.errors) {
+            const fieldErrors = Object.entries(result.errors)
+              .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+              .join('; ');
+            toast.error(`Validation failed: ${fieldErrors}`);
+          } else {
+            toast.error(result.message || 'Invalid form data. Please check your inputs.');
+          }
+        } else if (response.status === 401) {
+          toast.error('Your session has expired. Please log in again.');
+        } else if (response.status === 500) {
+          toast.error('Server error. Please try again later.');
+        } else {
+          toast.error(result.message || 'Failed to save profile');
+        }
+        console.error('API Error:', result);
+        return;
       }
 
       toast.success('Profile created successfully!');
       router.push('/intake');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong');
+      // Network error or unexpected error
+      console.error('Submission error:', error);
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          toast.error('Network error. Please check your connection and try again.');
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error('Something went wrong. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleSubmit = async () => {
+    // Validate current step first
     const isValid = await validateStep(currentStep);
     if (!isValid) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    form.handleSubmit(onSubmit)();
+    // Trigger full form validation
+    const isFormValid = await form.trigger();
+    if (!isFormValid) {
+      const errors = form.formState.errors;
+      const errorFields = Object.keys(errors);
+      toast.error(`Please check: ${errorFields.join(', ')}`);
+      console.error('Form validation errors:', errors);
+      return;
+    }
+
+    // If validation passes, submit the form
+    await form.handleSubmit(onSubmit)();
   };
 
   return (

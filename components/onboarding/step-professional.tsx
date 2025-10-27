@@ -74,7 +74,9 @@ export function StepProfessional({ form }: StepProfessionalProps) {
             <Label htmlFor="yearsOfExperience">Years of Experience</Label>
             <Input
               id="yearsOfExperience"
-              {...register('yearsOfExperience', { valueAsNumber: true })}
+              {...register('yearsOfExperience', { 
+                setValueAs: (v) => v === '' ? null : Number(v)
+              })}
               type="number"
               min="0"
               max="70"
