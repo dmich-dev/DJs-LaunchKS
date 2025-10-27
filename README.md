@@ -2,7 +2,7 @@
 
 **Competition:** [2025 Wichita Regional AI Prompt Championship](https://www.aipromptchamp.com)
 **Challenge:** #1 - Architect Track
-**Date:** October 25, 2024
+**Date:** October 25, 2025
 **Result:** 🥇 **Competition Winner** - Major Part of Winning Submission Portfolio
 
 A comprehensive workforce development platform built for the Kansas Department of Labor to help Kansas citizens upskill, change careers, and navigate personalized career transition pathways.
